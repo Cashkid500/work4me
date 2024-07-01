@@ -1,0 +1,33 @@
+class PhoneTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final newText = newValue.text;
+
+    // Apply phone number formatting
+    if (newText.length <= 10) {
+      final formattedText = formatPhoneNumber(newText); // Custom formatting function
+      return newValue.copyWith(
+        text: formattedText,
+        selection: TextSelection.collapsed(offset: formattedText.length),
+      );
+    }
+
+    // If the input exceeds 10 characters, truncate it
+    return newValue.copyWith(
+      text: newText.substring(0, 10),
+      selection: TextSelection.collapsed(offset: 10),
+    );
+  }
+
+  String formatPhoneNumber(String text) {
+    final formattedText = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      formattedText.write(text[i]);
+      if (i == 2 || i == 5) {
+        formattedText.write(' '); // Add space after the third and sixth digit
+      }
+    }
+    return formattedText.toString();
+  }
+}
